@@ -2,7 +2,7 @@
 
 html {
   scroll-behavior: smooth;
-  direction: rtl; /* مناسب برای پروژه‌های فارسی */
+  direction: rtl; 
 }
 
 body {
@@ -11,7 +11,7 @@ body {
   min-height: 100vh;
 }
 
-/* لینک‌ها بدون زیرخط و با انیمیشن رنگ */
+
 a {
   @apply no-underline transition-colors duration-200;
 }
@@ -19,17 +19,17 @@ a:hover {
   @apply text-green-400;
 }
 
-/* دکمه‌ها استایل پایه */
+
 button {
   @apply focus:outline-none transition duration-200 ease-in-out;
 }
 
-/* تصویرها ریسپانسیو و صاف */
+
 img {
   @apply max-w-full h-auto rounded;
 }
 
-/* اسکرول بار زیبا برای دارک مود */
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -44,3 +44,4 @@ img {
 ::-webkit-scrollbar-thumb:hover {
   background: #777;
 }
+

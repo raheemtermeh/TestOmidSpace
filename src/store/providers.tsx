@@ -1,4 +1,4 @@
-// src/store/providers.tsx
+
 "use client";
 
 import { Provider } from "react-redux";
@@ -29,7 +29,7 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <Provider store={store}>
       <div className="flex flex-col min-h-screen">
-        <nav className="bg-gray-800 text-white p-4 flex justify-between items-center">
+        <nav className="bg-[#101828] text-white p-4 flex justify-between items-center">
           <h1 className="text-xl font-bold">سیستم نمایش کاربران امید فضا</h1>
           <div>
             {isLoggedIn ? (

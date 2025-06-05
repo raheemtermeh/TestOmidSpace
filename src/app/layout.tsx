@@ -1,19 +1,19 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Vazirmatn } from "next/font/google";
-import { Providers } from "../store/providers"; // مسیر صحیح کامپوننت Providers
+import { Providers } from "../store/providers"; 
 
 const inter = Inter({ subsets: ["latin"] });
 
 const vazirmatn = Vazirmatn({
-  subsets: ["arabic"], // Vazirmatn معمولاً subset arabic رو داره
-  weight: ["400", "700"], // وزن‌های مورد نیاز
+  subsets: ["arabic"], 
+  weight: ["400", "700"], 
 });
 
 
 export const metadata = {
-  title: "اپلیکیشن مدیریت کاربران", // عنوان فارسی
-  description: "یک اپلیکیشن ساده مدیریت کاربران با Next.js و Redux", // توضیحات فارسی
+  title: "اپلیکیشن مدیریت کاربران", 
+  description: " اپلیکیشن مدیریت کاربران  ", 
 };
 
 export default function RootLayout({

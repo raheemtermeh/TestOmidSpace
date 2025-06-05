@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// تعریف نوع (Type) کاربر
 interface User {
   id: number;
   email: string;
@@ -10,53 +9,124 @@ interface User {
   avatar: string;
 }
 
-// تعریف نوع State
+interface NewUser {
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
 interface UsersState {
   users: User[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
-  // currentPage و totalPages رو حذف می‌کنیم چون دیگه pagination نداریم
-  // currentPage: number;
-  // totalPages: number;
+  currentPage: number;  
+  totalPages: number;    
+  totalUsers: number;   
 }
 
 const initialState: UsersState = {
   users: [],
   status: 'idle',
   error: null,
-  // currentPage و totalPages رو حذف می‌کنیم
-  // currentPage: 1,
-  // totalPages: 1,
+  currentPage: 1,   
+  totalPages: 1,     
+  totalUsers: 0,    
 };
 
-// Async Thunk برای دریافت کاربران - حالا بدون پارامتر page
 export const fetchUsers = createAsyncThunk(
   'users/fetchUsers',
-  async () => { 
+  async (page: number = 1, { rejectWithValue }) => {
     try {
+      const response = await axios.get(`https://reqres.in/api/users?page=${page}&per_page=3`, { // <--- per_page=3
+        headers: {
+          'x-api-key': 'reqres-free-v1',
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error("خطا در دریافت کاربران:", error);
+      return rejectWithValue(error.message || 'خطا در دریافت کاربران');
+    }
+  }
+);
 
-      const response = await axios.get(`https://reqres.in/api/users`,
+export const createUser = createAsyncThunk(
+  'users/createUser',
+  async (newUser: NewUser, { dispatch, getState }) => {
+    try {
+      const response = await axios.post(
+        `https://reqres.in/api/users`,
+        newUser,
         {
           headers: {
             'x-api-key': 'reqres-free-v1',
           },
-        });
-        console.log(response.data);
+        }
+      );
+      const currentState = (getState() as any).users; // Cast to 'any' or define RootState for getState
+      dispatch(fetchUsers(currentState.currentPage));
       return response.data;
     } catch (error: any) {
-      console.error("Error fetching users:", error);
+      console.error("خطا در ایجاد کاربر:", error);
       throw error;
     }
   }
 );
 
-// Slice اصلی کاربران
+export const updateUser = createAsyncThunk(
+  'users/updateUser',
+  async (updatedUser: User, { dispatch, getState }) => {
+    try {
+      const response = await axios.put(
+        `https://reqres.in/api/users/${updatedUser.id}`,
+        updatedUser,
+        {
+          headers: {
+            'x-api-key': 'reqres-free-v1',
+          },
+        }
+      );
+      const currentState = (getState() as any).users; // Cast to 'any' or define RootState for getState
+      dispatch(fetchUsers(currentState.currentPage));
+      return response.data;
+    } catch (error: any) {
+      console.error("خطا در ویرایش کاربر:", error);
+      throw error;
+    }
+  }
+);
+
+export const deleteUser = createAsyncThunk(
+  'users/deleteUser',
+  async (userId: number, { dispatch, getState }) => {
+    try {
+      await axios.delete(
+        `https://reqres.in/api/users/${userId}`,
+        {
+          headers: {
+            'x-api-key': 'reqres-free-v1',
+          },
+        }
+      );
+      const currentState = (getState() as any).users; 
+      let newPage = currentState.currentPage;
+      if (currentState.users.length === 1 && currentState.currentPage > 1) {
+          newPage = currentState.currentPage - 1;
+      }
+      dispatch(fetchUsers(newPage));
+      return userId;
+    } catch (error: any) {
+      console.error("خطا در حذف کاربر:", error);
+      throw error;
+    }
+  }
+);
+
+
 const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {
-    // اینجا می‌تونیم Reducerهای Sync دیگه رو اضافه کنیم
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsers.pending, (state) => {
@@ -65,13 +135,48 @@ const usersSlice = createSlice({
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.users = action.payload.data;
-        // currentPage و totalPages رو دیگه ست نمی‌کنیم
-        // state.currentPage = action.payload.page;
-        // state.totalPages = action.payload.total_pages;
+        state.currentPage = action.payload.page;      
+        state.totalPages = action.payload.total_pages; 
+        state.totalUsers = action.payload.total;      
+        state.error = null;
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message || 'Failed to fetch users';
+        state.error = action.error.message || 'خطا در دریافت کاربران';
+      })
+
+      .addCase(createUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(createUser.fulfilled, (state) => {
+        state.status = 'succeeded';
+        state.error = null;
+      })
+      .addCase(createUser.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'خطا در ایجاد کاربر';
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateUser.fulfilled, (state) => {
+        state.status = 'succeeded';
+        state.error = null;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'خطا در ویرایش کاربر';
+      })
+      .addCase(deleteUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(deleteUser.fulfilled, (state) => {
+        state.status = 'succeeded';
+        state.error = null;
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'خطا در حذف کاربر';
       });
   },
 });
