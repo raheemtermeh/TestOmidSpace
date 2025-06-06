@@ -207,7 +207,6 @@ const HomePage = () => {
 
   return (
     <div className="w-full min-h-[calc(100vh-64px)] flex flex-col items-center bg-gray-900 text-gray-100 py-8">
-
       <h1 className="text-4xl font-extrabold mb-8 text-center text-blue-400">
         لیست کاربران
       </h1>
@@ -230,39 +229,39 @@ const HomePage = () => {
       {users.length === 0 && status === "succeeded" ? (
         <p className="text-gray-400 text-xl">کاربری یافت نشد.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full max-w-5xl px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 w-full max-w-6xl px-4 py-6">
           {users.map((user) => (
             <div
               key={user.id}
-              className="bg-gray-800 shadow-lg rounded-xl p-6 flex flex-col items-center text-center border border-gray-700 hover:border-blue-500 transition-all duration-300 ease-in-out"
+              className="bg-gradient-to-br from-[#1e293b] to-[#0f172a] shadow-2xl rounded-2xl p-6 flex flex-col items-center text-center border border-[#334155] hover:border-cyan-500/70 transition-all duration-300 ease-in-out backdrop-blur-sm"
             >
               <img
                 src={user.avatar}
                 alt={`${user.first_name} ${user.last_name}`}
-                className="w-28 h-28 rounded-full mb-5 object-cover border-4 border-blue-500 shadow-md"
+                className="w-24 h-24 sm:w-28 sm:h-28 rounded-full mb-4 object-cover border-4 border-cyan-500 shadow-md hover:scale-105 transition-transform"
               />
-              <h2 className="text-2xl font-bold mb-2 text-white">
+              <h2 className="text-xl sm:text-2xl font-bold mb-1 text-white">
                 {user.first_name} {user.last_name}
               </h2>
-              <p className="text-gray-400 mb-5 text-base font-light">
+              <p className="text-gray-400 mb-4 text-sm sm:text-base">
                 {user.email}
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-3 mt-auto w-full">
                 <Link
                   href={`/user/${user.id}`}
-                  className="bg-sky-700 hover:bg-sky-800 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-200 transform hover:scale-105 flex-grow"
+                  className="bg-gradient-to-r from-cyan-600 to-cyan-800 hover:from-cyan-500 hover:to-cyan-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-200 transform hover:scale-105 flex-grow shadow-md"
                 >
                   مشاهده جزئیات
                 </Link>
                 <button
                   onClick={() => handleEditUser(user)}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-200 transform hover:scale-105 flex-grow"
+                  className="bg-gradient-to-r from-indigo-600 to-indigo-800 hover:from-indigo-500 hover:to-indigo-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-200 transform hover:scale-105 flex-grow shadow-md"
                 >
                   ویرایش
                 </button>
                 <button
                   onClick={() => handleDeleteUser(user.id)}
-                  className="bg-red-700 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-200 transform hover:scale-105 flex-grow"
+                  className="bg-gradient-to-r from-rose-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition duration-200 transform hover:scale-105 flex-grow shadow-md"
                 >
                   حذف
                 </button>
@@ -271,7 +270,6 @@ const HomePage = () => {
           ))}
         </div>
       )}
-
 
       {totalPages > 1 && (
         <div className="flex justify-center items-center gap-6 mt-10">
